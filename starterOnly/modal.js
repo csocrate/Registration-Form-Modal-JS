@@ -27,15 +27,18 @@ const form            = document.querySelector("form");
 const formData        = document.querySelectorAll(".formData");
 
 /**
- * Set up variable to hold Regular expression object
+ * List of rules from possible user data inputs
  */ 
-const regExpFullName  = new RegExp("^[a-zA-Z]([a-zA-Z\-\s]){1,30}$", "g");
-const regExpEmail     = new RegExp("^[a-zA-Z0-9\.\-\_]{1,30}@[a-zA-Z\-\_]{2,30}\.[a-zA-Z\-\_]{2,15}$", "g");
-const regExpBirthdate = new RegExp("^[0-9]{4}(\-[0-9]{2}){2}$", "g");
-const regExpQuantity  = new RegExp("^[0-9]{1,2}$", "g");
+const regex = {
+  fullname:  new RegExp("^[a-zA-Z]([a-zA-Z\-\s]){1,30}$", "g"),
+  email:     new RegExp("^[a-zA-Z0-9\.\-\_]{1,30}@[a-zA-Z\-\_]{2,30}\.[a-zA-Z\-\_]{2,15}$", "g"),
+  birthdate: new RegExp("^[0-9]{4}(\-[0-9]{2}){2}$", "g"),
+  quantity:  new RegExp("^[0-9]{1,2}$", "g")
+}
 
 /**
  * Location inputs
+ * @see isLocationChecked
  */ 
 const locations = [
   form.location1,
@@ -92,91 +95,99 @@ closeModalBtn.addEventListener("click", closeModal);
    ---------------------------------- */
 
 const reserveApp = function() {
-  /**
-   * Focus and blur field
-   */
-  formData.forEach((child) => {
-    const input = child.querySelector("input");
-    // console.log(input);
-    const isInputFocus = (event) => {
-      event.target.style.background = "#e8f0fe";
-    }
-    
-    const isInputBlur = (event) => {
-      event.target.style.background = "";
-    }
-    
-    input.addEventListener("focus", isInputFocus, false);
-    input.addEventListener("blur", isInputBlur, false);
-  })
 
   /**
-   * Test if value is not empty and matches to expected values
-   * with regular expressions
-   * About firstname, lastname, email, birthdate and quantity inputs
+   * Implement rules about firstname, lastname, email, birthdate and quantity inputs
+   * @param {string} name - Value name of input element
+   * @param {object} regExpName - Expected data rules
+   * @param {string} text - Message
+   * @returns {boolean} - If user data is set to true or false that means required field is correct or not
+   * @see isValid
    */
-  function isValueMatch({name}, regExpName) {
-    let elementByName = document.getElementsByName(name)[0];
-    // console.log(elementByName);
+  function isValueMatch({name}, regExpName, text) {
+    let elementByName = document.querySelector("input[name='" + name + "']");
 
     if (elementByName.value.match(regExpName)) {
-      console.log(elementByName.value);
-      elementByName.style.borderColor = "transparent";
+      // console.log("Quantity: " + elementByName.value);
       return true;
     } else {
-      console.log("error: " + name);
-      elementByName.style.borderWidth = "3px";
-      elementByName.style.borderColor = "rgb(254 20 85)";
+      // console.log("Incorrect: " + name);
       return false;
     }
   }
 
   /**
-   * Check if a radio button is checked
-   * About location inputs
+   * Implement rules about location inputs
+   * @returns {boolean}  Radio button is checked or not
+   * @see locations Array
+   * @see isValid
    */
   function isLocationChecked() {
     for (let i in locations) {
       if (locations[i].checked) {
-        console.log(form.location.value);
+        // console.log(locations[i].value);
         return true;
       }
     }
     if (!locations.checked) {
-      console.log("Merci d'indiquer le tournoi.");
+      // console.log("Radio button is not checked");
+      return false;
     }
   }
 
   /**
-   * Check if a checkbox is checked
-   * About terms and newsletters inputs
+   * Implement rules about terms and newsletters inputs
+   * @param {string} id - Value of ID global attribute
+   * @returns {boolean} - Checkbox is checked or not
+   * @see isValid
    */
   function isCheckboxChecked({id}) {
     const elementById = document.getElementById(id);
 
     if (elementById.checked) {
-      console.log(id + ": " + elementById.checked );
+      // console.log(id + ": " + elementById.checked );
       return true;
-    } else if ((elementById.checked === false) && (elementById === document.getElementById("checkbox1"))) {
-      console.log("Merci de lire et d'accepter les conditions d'utilisation.");
+    } else if ((elementById.checked === false) && (elementById.name === "terms")) {
+      // console.log("Terms checkbox is not checked");
       return false;
-    } else {
-      console.log(id + ": optional");
     }
   }
 
   /**
-   * Valid inputs
+   * Input validation
+   * @see {@link isValueMatch}
+   * @see {@link isLocationChecked}
+   * @see {@link isCheckboxChecked} 
    */
-  function isValid() {
-    isValueMatch(first, regExpFullName);
-    isValueMatch(last, regExpFullName);
-    isValueMatch(email, regExpEmail);
-    isValueMatch(birthdate, regExpBirthdate);
-    isValueMatch(quantity, regExpQuantity);
-    isLocationChecked();
-    isCheckboxChecked(checkbox1); // Terms input
-    isCheckboxChecked(checkbox2); // Newletters input (not required)
+  const inputValidation = () => {
+    let result = true;
+
+    if (!isValueMatch(first, regex.fullname)) {
+      // console.log(!isValueMatch(first, regex.fullname));
+      result = false;
+    }
+
+    if (!isValueMatch(last, regex.fullname)) {
+      result = false;
+    }
+
+    if (!isValueMatch(email, regex.email)) {
+      result = false;
+    }
+    if (!isValueMatch(birthdate, regex.birthdate)) {
+      result = false;
+    }
+    if (!isValueMatch(quantity, regex.quantity)) {
+      result = false;
+    }
+    if (!isLocationChecked()) {
+      result = false;
+    }
+    if (!isCheckboxChecked(checkbox1)) { // Terms input
+      result = false;
+    }
+
+    isCheckboxChecked(checkbox2);
   }
 
   /**
@@ -184,12 +195,8 @@ const reserveApp = function() {
    * when submit event is fires
    */
    const validate = (e) => {
-    if ((isValueMatch(first, regExpFullName) === true) && (isValueMatch(last, regExpFullName) === true) && (isValueMatch(email, regExpEmail)) && (isValueMatch(birthdate, regExpBirthdate)) && (isValueMatch(quantity, regExpQuantity)) && (isLocationChecked() === true) && (isCheckboxChecked(checkbox1) === true)) {
-      console.log("Merci pour votre inscription.");
-    } else {
-      e.preventDefault(); // Prevent the form being submitted
-      isValid();
-    }
+    e.preventDefault(); // Prevent the form being submitted
+    inputValidation();
   }
   form.addEventListener("submit", validate, false);
 }
