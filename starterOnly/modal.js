@@ -25,6 +25,9 @@ const modalContent    = document.querySelector(".content");
 // Form
 const form            = document.querySelector("form");
 const formData        = document.querySelectorAll(".formData");
+const locationInput   = document.querySelectorAll("input[name=location]");
+const radioButton     = document.querySelector("input[type=radio]");
+const spanError       = document.querySelector("span[data-error]");
 
 /**
  * List of rules from possible user data inputs
@@ -34,6 +37,20 @@ const regex = {
   email:     new RegExp("^[a-zA-Z0-9\.\_\-]{1,30}@[a-zA-Z\-\_]{2,30}\.[a-zA-Z\-\_]{2,15}$", "g"),
   birthdate: new RegExp("^[0-9]{4}(\-[0-9]{2}){2}$", "g"),
   quantity:  new RegExp("^[0-9]{1,2}$", "g")
+}
+
+/**
+ * Error Messages
+ * @see inputValidation
+ */ 
+const errorMessages = {
+  first:     "Le champ prénom doit contenir 2 caractères ou plus.",
+  last:      "Le champ nom doit contenir 2 caractères ou plus.",
+  email:     "L'adresse email doit être valide.",
+  birthdate: "La date de naissance doit être valide.",
+  quantity:  "Le nombre de tournoi doit être saisi.",
+  location:  "Un tournoi doit être choisi.",
+  terms:     "Merci de lire et d'accepter les conditions d'utilisation."
 }
 
 /* ----------------------------------
@@ -89,30 +106,44 @@ const reserveApp = function() {
    * Implement rules - About firstname, lastname, email, birthdate and quantity inputs
    * @param {string} name - Value name of input element
    * @param {object} regExpName - Expected data rules
+   * @param {string} errorText - Message
    * @returns {boolean} - If user data is set to true or false that means required field is correct or not
    * @see inputValidation
    */
-  function isValueMatch({name}, regExpName) {
+  function isValueMatch({name}, regExpName, errorText) {
     const inputByname = document.querySelector("input[name=" + name + "]");
-    
-    return (inputByname.value.match(regExpName) ? true : false); 
+
+    if (inputByname.value.match(regExpName)) {
+      inputByname.parentElement.dataset.error = "";
+      inputByname.parentElement.dataset.errorVisible = "false";
+      return true;
+    } else {
+      inputByname.parentElement.dataset.error = errorText;
+      inputByname.parentElement.dataset.errorVisible = "true";
+      return false;
+    }
   }
 
   /**
    * Implement rules - About location inputs
+   * @param {string} errorText - Message
    * @returns {boolean}  Radio button is checked or not
    * @see inputValidation
    */
-  function isLocationChecked() {
-    const locations = Array.from(document.querySelectorAll("input[name=location]"));
+  function isLocationChecked(errorText) {
+    const locations = Array.from(locationInput);
 
     for (let i in locations) {
-      if (locations[i].checked) {
+      if (locations[i].checked) {        
+        locations[i].parentElement.dataset.error = "";
+        locations[i].parentElement.dataset.errorVisible = "false";
         return true;
       }
     }
     
     if (!locations.checked) {
+      radioButton.parentElement.dataset.error = errorText;
+      radioButton.parentElement.dataset.errorVisible = "true";
       return false;
     }
   }
@@ -123,18 +154,25 @@ const reserveApp = function() {
    * @returns {boolean} - Checkbox is checked or not
    * @see inputValidation
    */
-  function isCheckboxChecked({id}) {
-    const inputById = document.querySelector("input[id=" + id + "]");
+  function isCheckboxChecked({id}, errorText) {
+    const inputById = document.querySelector("input[id='" + id + "']");
 
-    if (inputById.checked) {
+    if (inputById.checked && (id !== "checkbox1")) {
       return true;
-    } else if ((inputById.checked === false) && (inputById.name === "terms")) {
+    } else if (inputById.checked && (id === "checkbox1")) {
+      spanError.dataset.error = "";
+      spanError.dataset.errorVisible = "false";
+      return true;
+    } else if (!inputById.checked && (id === "checkbox1")) {
+      spanError.dataset.error = errorText;
+      spanError.dataset.errorVisible = "true";
       return false;
     }
   }
 
   /**
    * Rejects any input that doesn't follow rules
+   * @see {@link errorMessages} Object
    * @see {@link isValueMatch}
    * @see {@link isLocationChecked}
    * @see {@link isCheckboxChecked} 
@@ -142,27 +180,27 @@ const reserveApp = function() {
   const inputValidation = () => {
     let result = true;
 
-    if (!isValueMatch(first, regex.fullname)) {
+    if (!isValueMatch(first, regex.fullname, errorMessages.first)) {
       result = false;
     }
 
-    if (!isValueMatch(last, regex.fullname)) {
+    if (!isValueMatch(last, regex.fullname, errorMessages.last)) {
       result = false;
     }
 
-    if (!isValueMatch(email, regex.email)) {
+    if (!isValueMatch(email, regex.email, errorMessages.email)) {
       result = false;
     }
-    if (!isValueMatch(birthdate, regex.birthdate)) {
+    if (!isValueMatch(birthdate, regex.birthdate, errorMessages.birthdate)) {
       result = false;
     }
-    if (!isValueMatch(quantity, regex.quantity)) {
+    if (!isValueMatch(quantity, regex.quantity, errorMessages.quantity)) {
       result = false;
     }
-    if (!isLocationChecked()) {
+    if (!isLocationChecked(errorMessages.location)) {
       result = false;
     }
-    if (!isCheckboxChecked(checkbox1)) { // Terms input
+    if (!isCheckboxChecked(checkbox1, errorMessages.terms)) { // Terms input
       result = false;
     }
 
@@ -170,7 +208,7 @@ const reserveApp = function() {
   }
 
   /**
-   * Handle implementation form inputs
+   * Handle implementation form inputs and user responses
    * when submit event is fires
    */
    const validate = (e) => {

@@ -214,15 +214,15 @@ input {
 }
 .formData[data-error]::after {
   content: attr(data-error);
-  font-size: 0.4em;
+  font-size: .5em;
   color: #e54858;
   display: block;
-  margin-top: 7px;
-  margin-bottom: 7px;
-  text-align: right;
-  line-height: 0.3;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  line-height: .3;
   opacity: 0;
-  transition: 0.3s;
+  transition: .3s;
 }
 .formData[data-error-visible="true"]::after {
   opacity: 1;
@@ -230,12 +230,15 @@ input {
 .formData[data-error-visible="true"] .text-control {
   border: 2px solid #e54858;
 }
-/* 
-input[data-error]::after {
+span[data-error]::after {
     content: attr(data-error);
-    font-size: 0.4em;
-    color: red;
-} */
+    display: none;
+    font-size: .5em;
+    color: #e54858;
+}
+span[data-error-visible="true"]::after  {
+  display: block;
+}
 .checkbox-label,
 .checkbox2-label {
   position: relative;
