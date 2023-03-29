@@ -31,23 +31,10 @@ const formData        = document.querySelectorAll(".formData");
  */ 
 const regex = {
   fullname:  new RegExp("^[a-zA-Z]([a-zA-Z\-\s]){1,30}$", "g"),
-  email:     new RegExp("^[a-zA-Z0-9\.\-\_]{1,30}@[a-zA-Z\-\_]{2,30}\.[a-zA-Z\-\_]{2,15}$", "g"),
+  email:     new RegExp("^[a-zA-Z0-9\.\_\-]{1,30}@[a-zA-Z\-\_]{2,30}\.[a-zA-Z\-\_]{2,15}$", "g"),
   birthdate: new RegExp("^[0-9]{4}(\-[0-9]{2}){2}$", "g"),
   quantity:  new RegExp("^[0-9]{1,2}$", "g")
 }
-
-/**
- * Location inputs
- * @see isLocationChecked
- */ 
-const locations = [
-  form.location1,
-  form.location2,
-  form.location3,
-  form.location4,
-  form.location5,
-  form.location6
-];
 
 /* ----------------------------------
      LAUNCH AND CLOSE MODAL EVENT
@@ -94,67 +81,60 @@ closeModalBtn.addEventListener("click", closeModal);
           HANDLE RESERVE FORM                        
    ---------------------------------- */
 
+/**
+ * Handle register form submission
+ */
 const reserveApp = function() {
-
   /**
-   * Implement rules about firstname, lastname, email, birthdate and quantity inputs
+   * Implement rules - About firstname, lastname, email, birthdate and quantity inputs
    * @param {string} name - Value name of input element
    * @param {object} regExpName - Expected data rules
-   * @param {string} text - Message
    * @returns {boolean} - If user data is set to true or false that means required field is correct or not
-   * @see isValid
+   * @see inputValidation
    */
-  function isValueMatch({name}, regExpName, text) {
-    let elementByName = document.querySelector("input[name='" + name + "']");
-
-    if (elementByName.value.match(regExpName)) {
-      // console.log("Quantity: " + elementByName.value);
-      return true;
-    } else {
-      // console.log("Incorrect: " + name);
-      return false;
-    }
+  function isValueMatch({name}, regExpName) {
+    const inputByname = document.querySelector("input[name=" + name + "]");
+    
+    return (inputByname.value.match(regExpName) ? true : false); 
   }
 
   /**
-   * Implement rules about location inputs
+   * Implement rules - About location inputs
    * @returns {boolean}  Radio button is checked or not
-   * @see locations Array
-   * @see isValid
+   * @see inputValidation
    */
   function isLocationChecked() {
+    const locations = Array.from(document.querySelectorAll("input[name=location]"));
+
     for (let i in locations) {
       if (locations[i].checked) {
-        // console.log(locations[i].value);
         return true;
       }
     }
+    
     if (!locations.checked) {
-      // console.log("Radio button is not checked");
       return false;
     }
   }
 
   /**
-   * Implement rules about terms and newsletters inputs
+   * Implement rules - About terms and newsletters inputs
    * @param {string} id - Value of ID global attribute
    * @returns {boolean} - Checkbox is checked or not
-   * @see isValid
+   * @see inputValidation
    */
   function isCheckboxChecked({id}) {
-    const elementById = document.getElementById(id);
+    const inputById = document.querySelector("input[id=" + id + "]");
 
-    if (elementById.checked) {
-      // console.log(id + ": " + elementById.checked );
+    if (inputById.checked) {
       return true;
-    } else if ((elementById.checked === false) && (elementById.name === "terms")) {
-      // console.log("Terms checkbox is not checked");
+    } else if ((inputById.checked === false) && (inputById.name === "terms")) {
       return false;
     }
   }
 
   /**
-   * Input validation
+   * Rejects any input that doesn't follow rules
    * @see {@link isValueMatch}
    * @see {@link isLocationChecked}
    * @see {@link isCheckboxChecked} 
@@ -163,7 +143,6 @@ const reserveApp = function() {
     let result = true;
 
     if (!isValueMatch(first, regex.fullname)) {
-      // console.log(!isValueMatch(first, regex.fullname));
       result = false;
     }
 
@@ -187,11 +166,11 @@ const reserveApp = function() {
       result = false;
     }
 
-    isCheckboxChecked(checkbox2);
+    isCheckboxChecked(checkbox2); // Newsletters input - not required
   }
 
   /**
-   * Handle register form submission
+   * Handle implementation form inputs
    * when submit event is fires
    */
    const validate = (e) => {
