@@ -18,16 +18,18 @@
  * DOM Elements
  */
 // Modal
-const modalbg         = document.querySelector(".bground");
-const modalBtn        = document.querySelectorAll(".modal-btn");
-const closeModalBtn   = document.querySelector(".close");
-const modalContent    = document.querySelector(".content");
+const modalbg          = document.querySelector(".bground");
+const modalBody        = document.querySelector("div.modal-body");
+const modalBtn         = document.querySelectorAll(".modal-btn");
+const closeModalBtn    = document.querySelectorAll(".close");
+const modalContent     = document.querySelector(".content");
+const closeSuccessForm = document.querySelector(".btn-submit ~ .close");
 // Form
-const form            = document.querySelector("form");
-const formData        = document.querySelectorAll(".formData");
-const locationInput   = document.querySelectorAll("input[name=location]");
-const radioButton     = document.querySelector("input[type=radio]");
-const spanError       = document.querySelector("span[data-error]");
+const form             = document.querySelector("form");
+const formData         = document.querySelectorAll(".formData");
+const locationInput    = document.querySelectorAll("input[name=location]");
+const radioButton      = document.querySelector("input[type=radio]");
+const spanError        = document.querySelector("span[data-error]");
 
 /**
  * List of rules from possible user data inputs
@@ -66,10 +68,13 @@ const launchModal = () => {
   const visibleModal = document.querySelector(".bground.visible");
 
   if (typeof visibleModal !== "undefined") {
-    //Add ARIA atttributes
-    closeModalBtn.setAttribute("aria-label", "Fermer le formulaire");
-    closeModalBtn.setAttribute("title", "Fermer le formulaire");
-    closeModalBtn.setAttribute("aria-expanded", "true");
+
+    closeModalBtn.forEach( closeBtn => {
+      //Add ARIA atttributes
+      closeBtn.setAttribute("aria-label", "Fermer le formulaire");
+      closeBtn.setAttribute("title", "Fermer le formulaire");
+      closeBtn.setAttribute("aria-expanded", "true");
+    })
   }
 }
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -86,13 +91,15 @@ const closeModal = () => {
     modalbg.classList.remove("visible");
     modalbg.style.display = "none";
 
-    // Handle ARIA attributes
-    closeModalBtn.removeAttribute("aria-label");
-    closeModalBtn.removeAttribute("title");
-    closeModalBtn.setAttribute("aria-expanded", "false");
+    closeModalBtn.forEach( closeBtn => {
+      // Handle ARIA attributes
+      closeBtn.removeAttribute("aria-label");
+      closeBtn.removeAttribute("title");
+      closeBtn.setAttribute("aria-expanded", "false");
+    })
   }, 800); // Same timing as modal animation
 }
-closeModalBtn.addEventListener("click", closeModal);
+closeModalBtn.forEach((btn) => btn.addEventListener("click", closeModal));
 
 /* ----------------------------------
           HANDLE RESERVE FORM                        
@@ -180,31 +187,40 @@ const reserveApp = function() {
   const inputValidation = () => {
     let result = true;
 
-    if (!isValueMatch(first, regex.fullname, errorMessages.first)) {
-      result = false;
-    }
+    // if (!isValueMatch(first, regex.fullname, errorMessages.first)) {
+    //   result = false;
+    // }
 
-    if (!isValueMatch(last, regex.fullname, errorMessages.last)) {
-      result = false;
-    }
+    // if (!isValueMatch(last, regex.fullname, errorMessages.last)) {
+    //   result = false;
+    // }
 
-    if (!isValueMatch(email, regex.email, errorMessages.email)) {
-      result = false;
-    }
-    if (!isValueMatch(birthdate, regex.birthdate, errorMessages.birthdate)) {
-      result = false;
-    }
-    if (!isValueMatch(quantity, regex.quantity, errorMessages.quantity)) {
-      result = false;
-    }
-    if (!isLocationChecked(errorMessages.location)) {
-      result = false;
-    }
+    // if (!isValueMatch(email, regex.email, errorMessages.email)) {
+    //   result = false;
+    // }
+    // if (!isValueMatch(birthdate, regex.birthdate, errorMessages.birthdate)) {
+    //   result = false;
+    // }
+    // if (!isValueMatch(quantity, regex.quantity, errorMessages.quantity)) {
+    //   result = false;
+    // }
+    // if (!isLocationChecked(errorMessages.location)) {
+    //   result = false;
+    // }
     if (!isCheckboxChecked(checkbox1, errorMessages.terms)) { // Terms input
       result = false;
     }
 
     isCheckboxChecked(checkbox2); // Newsletters input - not required
+
+    if (result === true ) {
+      modalBody.classList.add("success");
+
+      closeSuccessForm.classList.remove("none");
+      closeSuccessForm.classList.add("success");
+
+      form.dataset.success = "Merci ! \n Votre réservation \n est confirmée.";
+    }
   }
 
   /**
