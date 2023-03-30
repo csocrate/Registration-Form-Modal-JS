@@ -17,6 +17,8 @@
 /**
  * DOM Elements
  */
+// Top nav
+const body             = document.querySelector("body");
 // Modal
 const modalbg          = document.querySelector(".bground");
 const modalBody        = document.querySelector("div.modal-body");
@@ -63,8 +65,11 @@ const errorMessages = {
  * Launch modal event
  */
 const launchModal = () => {
+  body.classList.add("visible-modal");
+
   modalbg.style.display = "block";
   modalbg.classList.add("visible");
+  
   const visibleModal = document.querySelector(".bground.visible");
 
   if (typeof visibleModal !== "undefined") {
@@ -88,6 +93,7 @@ const closeModal = () => {
 
   setTimeout(() => {      
     modalContent.classList.remove("dismissed");
+    body.classList.remove("visible-modal");
     modalbg.classList.remove("visible");
     modalbg.style.display = "none";
 
