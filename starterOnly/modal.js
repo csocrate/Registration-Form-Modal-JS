@@ -1,7 +1,7 @@
 /***********************************************************
  *                     TOP NAVIGATION                     *
  ***********************************************************/
- function editNav() {
+function editNav() {
   var x = document.getElementById("myTopnav");
   if (x.className === "topnav") {
     x.className += " responsive";
@@ -30,6 +30,7 @@ const formData         = document.querySelectorAll(".formData");
 const locationInput    = document.querySelectorAll("input[name=location]");
 const radioButton      = document.querySelector("input[type=radio]");
 const spanError        = document.querySelector("span[data-error]");
+const birthdateInput   = document.querySelector("input[id=birthdate]");
 
 /**
  * List of rules from possible user data inputs
@@ -104,6 +105,31 @@ closeModalBtn.forEach((btn) => btn.addEventListener("click", closeModal));
 /* ----------------------------------
           HANDLE RESERVE FORM                        
    ---------------------------------- */
+
+/**
+ * Handle focus event on birthdate input
+ */
+const isInputFocus = (event) => {
+  event.target.type = "date";
+}  
+birthdateInput.addEventListener("focus", isInputFocus, false);
+
+/**
+ * Handle blur event on birthdate input
+ */
+const isInputBlur = (event) => {
+  const birthdateValue = birthdateInput.value;
+
+  if (!birthdateValue) {
+    event.target.type = "text";
+  } else {
+    birthdateValue.toString()
+                  .split("/")
+                  .reverse()
+                  .join();
+  }
+}
+birthdateInput.addEventListener("blur", isInputBlur, false);
 
 /**
  * Implement rules - About firstname, lastname, email, birthdate and quantity inputs
