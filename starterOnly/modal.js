@@ -1,23 +1,14 @@
-/***********************************************************
- *                     TOP NAVIGATION                     *
- ***********************************************************/
-function editNav() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
-}
-
-/***********************************************************
- *                       MODAL FORM                       *
- ***********************************************************/
+/**
+ * ------------------------------------------------------------
+ * GameOn modal.js
+ * ------------------------------------------------------------
+ */
 
 /**
  * DOM Elements
  */
 // Modal
+const body             = document.querySelector("body");
 const modalbg          = document.querySelector(".bground");
 const modalBody        = document.querySelector("div.modal-body");
 const modalBtn         = document.querySelectorAll(".modal-btn");
@@ -32,6 +23,22 @@ const radioButton      = document.querySelector("input[type=radio]");
 const spanError        = document.querySelector("span[data-error]");
 const birthdateInput   = document.querySelector("input[id=birthdate]");
 
+/***********************************************************
+ *                     TOP NAVIGATION                     *
+ ***********************************************************/
+ function editNav() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+
+/***********************************************************
+ *                       MODAL FORM                       *
+ ***********************************************************/
+
 /**
  * List of rules from possible user data inputs
  */ 
@@ -45,7 +52,7 @@ const regex = {
 /**
  * Error Messages
  * @see inputValidation
- */ 
+ */
 const errorMessages = {
   first:     "Le champ prénom doit contenir 2 caractères ou plus.",
   last:      "Le champ nom doit contenir 2 caractères ou plus.",
@@ -56,6 +63,11 @@ const errorMessages = {
   terms:     "Merci de lire et d'accepter les conditions d'utilisation."
 }
 
+/**
+ * Add style to fifth index of formData NodeList
+ */
+formData[5].style.marginRight = "18px";
+
 /* ----------------------------------
      LAUNCH AND CLOSE MODAL EVENT
    ---------------------------------- */
@@ -64,8 +76,9 @@ const errorMessages = {
  * Launch modal event
  */
 const launchModal = () => {
-  modalbg.style.display = "block";
+  modalbg.style.display = "flex";
   modalbg.classList.add("visible");
+  body.classList.add("responsive-modal");
   const visibleModal = document.querySelector(".bground.visible");
 
   if (typeof visibleModal !== "undefined") {
@@ -87,7 +100,8 @@ const closeModal = () => {
   // Add .dismissed for exit animation 
   modalContent.classList.add("dismissed");
 
-  setTimeout(() => {      
+  setTimeout(() => {
+    body.classList.remove("responsive-modal");
     modalContent.classList.remove("dismissed");
     modalbg.classList.remove("visible");
     modalbg.style.display = "none";
