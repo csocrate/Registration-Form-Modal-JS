@@ -14,9 +14,10 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background-image: url("background.png");
+  position: relative;
   font-family: var(--font-default);
   font-size: 18px;
+  width: 100%;
   max-width: 1300px;
   margin: 0 auto;
 }
@@ -34,56 +35,55 @@ img {
   padding-right: 1rem;
 }
 
+/* Top nav */
 .topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2.5vw;
   overflow: hidden;
   margin: 3.5%;
-}
-.header-logo {
-    float: left;
-}
-.main-navbar {
-    float: right;
+  padding-bottom: 45px;
 }
 .topnav a {
   float: left;
   display: block;
   color: #000000;
   text-align: center;
-  padding: 12px 12px;
+  padding: 10px 10px;
   margin: 5px;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 17px;
   font-family: Roboto, sans-serif;
+  border-radius: 10px;
 }
-
-.topnav a:hover {
-  background-color: #ff0000;
-  color: #ffffff;
-  border-radius: 15px;
-}
-
+.topnav a:hover,
 .topnav a.active {
   background-color: #ff0000;
   color: #ffffff;
-  border-radius: 15px;
 }
-
+.topnav a.active {
+  text-decoration: underline;
+}
 .topnav .icon {
   display: none;
 }
+/* End Top nav */
 
 main {
   font-size: 130%;
   font-weight: bolder;
-  color: black;
   padding-top: 0.5vw;
+  color: black;
+  border-radius: 2rem;
+  text-align: justify;
+}
+
+.topnav,
+main {
   padding-left: 2vw;
   padding-right: 2vw;
   margin: 1px 20px 15px;
-  border-radius: 2rem;
-  text-align: justify;
-
-
 }
 
 .modal-btn {
@@ -107,8 +107,6 @@ main {
   padding: 10px;
   font-family: var(--font-slab);
 }
-
-/* Modal form */
 
 .button {
   background: #fe142f;
@@ -448,7 +446,6 @@ label[for="checkbox1"] {
   margin-top: 7px;
 }
 .hero-section {
-  min-height: 93vh;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -559,14 +556,24 @@ footer {
     padding: 12px 35px;
   }
   .copyrights {
-    margin-top: 50px;
+    margin-top: 30px;
     text-align: center;
   }
 }
 
 @media screen and (max-width: 768px) {
+  .topnav,
+  main {
+    width: 90%;
+    margin: 0 auto;
+  }
   .responsive-modal {
     overflow-y: hidden;
+  }
+  /* Top nav */
+  .topnav {
+    padding-top: 5.5vw;
+    padding-bottom: 2vw;
   }
   .responsive-modal .topnav {
     position: fixed;
@@ -578,29 +585,76 @@ footer {
     padding-left: 2vw;
     padding-right: 2vw;
     margin: 0 auto;
+    padding-left: calc(2vw + 20px);
+    padding-right: calc(2vw + 20px);
     background: #fff;
     z-index: 3;
+  }
+  .header-logo {
+    width: 150px;
+  }
+  .header-logo img {
+    width: 100%;
+  }
+  .topnav.responsive .main-navbar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    padding-top: 10.5vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    margin: 1px 20px 15px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: -4px 5px 5px 0px rgba(0,0,0,0.3);
+  }
+  .main-navbar.hide a:not(.icon) {
+    display: none;
   }
   .topnav a {
     display: none;
   }
-  .topnav a.icon {
-    float: right;
+  .topnav a.icon { 
     display: block;
+    margin-right: 0;
+    padding-right: 0;
+    padding-bottom: 4px;
+    background-color: transparent;
   }
-  .topnav.responsive {
-    position: relative;
-  }
-  .topnav.responsive .icon {
+  .topnav.responsive a.icon {
     position: absolute;
     right: 0;
     top: 0;
+    margin: 1px 20px 15px;
+    padding-top: 5.85vw;
+  }
+  .topnav a.icon i {
+    font-size: 1.25em;
+    color: #ff0000;
   }
   .topnav.responsive a {
     float: none;
     display: block;
     text-align: left;
   }
+  .responsive-modal .topnav.responsive a:not(.icon) {
+    display: none;
+  }
+  /* End Top nav */
+
+  /* Hero section */
+  .hero-content {
+    padding: 20px 0;
+    min-width: unset;
+  }
+  .hero-headline {
+    font-size: 3.5rem;
+  }
+  .hero-text {
+    font-size: 1.15rem;
+  }
+
   /* Modal */
   .bground.visible {
     margin-top: 0;
@@ -608,6 +662,7 @@ footer {
     background: #fff;
   }
   .bground.visible .content {
+    margin-top: 2.5rem;
     margin-bottom: 0;
   }
   /* Form */
@@ -620,26 +675,34 @@ footer {
 }
 
 @media screen and (max-width: 540px) {
-  .topnav.visible {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
+  /* Top nav */
+  .topnav {
     height: 5.5rem;
-    padding-left: 2vw;
-    padding-right: 2vw;
-    margin: 0 auto;
-    z-index: 3;
-    background: #fff;
-  } 
-  .topnav a {
-    display: none;
+  }
+  .header-logo {
+    width: 125px;
+  }
+  .topnav.responsive .main-navbar {
+    top: 16px;
+    padding-top: 14.5vw;
   }
   .topnav a.icon {
-    float: right;
-    display: block;
-    margin-top: -15px;
+    padding-bottom: 7px;
   }
+  /* End Top nav */
+
+  /* Hero section */
+  .hero-content {
+    padding-bottom: 0;
+  }
+  .hero-headline {
+    font-size: 2.5rem;
+  }
+  .hero-text {
+    font-size: .9rem;
+    margin-top: 22px;
+  }
+  
   /* Modal */
   .close:before,
   .close:after {
@@ -686,9 +749,24 @@ footer {
     padding-bottom: 6px;
     padding-left: 35px;
   }
+  /* End Form */
 }
 
 @media screen and (max-width: 375px) {
+  /* Top nav */
+  .topnav.responsive .main-navbar {
+    padding-top: 16.5vw;
+  }
+
+  /* Hero section */
+  .hero-headline {
+    font-size: 2.25rem;
+  }
+  .hero-text {
+    font-size: .95rem;
+  }
+
+  /* Form */
   .checkbox-label,
   .checkbox2-label {
     margin-left: 21px;
@@ -702,6 +780,23 @@ footer {
 }
 
 @media screen and (max-width: 320px) {
+  /* Top nav */
+  .topnav.responsive .main-navbar {
+    padding-top: 18.5vw;
+  }
+  .topnav a.icon {
+    padding-bottom: 9px;
+  }
+
+  /* Hero section */
+  .hero-headline {
+    font-size: 2rem;
+  }
+  .hero-text {
+    font-size: 1rem;
+  }
+
+  /* Form */
   .checkbox-label,
   .checkbox2-label {
     margin-left: 23px;
@@ -718,6 +813,26 @@ footer {
 
   span[data-error]::after {
     margin-bottom: 11px;
+  }
+  /* End Form */
+
+  .copyrights {
+    font-size: .875rem;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  /* Hero section */
+  .hero-headline {
+    font-size: 1.8rem;
+  }
+  .hero-text {
+    font-size: .975rem;
+  }
+  /* End Hero section */
+
+  .copyrights {
+    font-size: .8rem;
   }
 }
 

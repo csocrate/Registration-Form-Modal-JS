@@ -7,14 +7,20 @@
 /**
  * DOM Elements
  */
-// Modal
+// Body
 const body             = document.querySelector("body");
+
+// Top nav
+const myTopnav         = document.getElementById("myTopnav");
+
+// Modal
 const modalbg          = document.querySelector(".bground");
 const modalBody        = document.querySelector("div.modal-body");
 const modalBtn         = document.querySelectorAll(".modal-btn");
 const closeModalBtn    = document.querySelectorAll(".close");
 const modalContent     = document.querySelector(".content");
 const closeSuccessForm = document.querySelector(".btn-submit ~ .close");
+
 // Form
 const form             = document.querySelector("form");
 const formData         = document.querySelectorAll(".formData");
@@ -26,14 +32,21 @@ const birthdateInput   = document.querySelector("input[id=birthdate]");
 /***********************************************************
  *                     TOP NAVIGATION                     *
  ***********************************************************/
- function editNav() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
+/**
+ * Handle display of navigation and menu button
+ */
+function editNav() {
+  if (body.className !== "responsive-modal") {    
+    if (myTopnav.className === "topnav") {
+      myTopnav.className += " responsive";
+      myTopnav.querySelector(".topnav i").classList.replace("fa-bars", "fa-xmark");
+    } else {
+      myTopnav.className = "topnav";
+      myTopnav.querySelector(".topnav i").classList.replace("fa-xmark", "fa-bars");
+    }
   }
 }
+
 
 /***********************************************************
  *                       MODAL FORM                       *
@@ -71,7 +84,6 @@ formData[5].style.marginRight = "18px";
 /* ----------------------------------
      LAUNCH AND CLOSE MODAL EVENT
    ---------------------------------- */
-
 /**
  * Launch modal event
  */
@@ -80,6 +92,10 @@ const launchModal = () => {
   modalbg.classList.add("visible");
   body.classList.add("responsive-modal");
   const visibleModal = document.querySelector(".bground.visible");
+
+  // This does not distract user with another button while form is showing
+  editNav();
+
 
   if (typeof visibleModal !== "undefined") {
 
@@ -104,6 +120,7 @@ const closeModal = () => {
     body.classList.remove("responsive-modal");
     modalContent.classList.remove("dismissed");
     modalbg.classList.remove("visible");
+    
     modalbg.style.display = "none";
 
     closeModalBtn.forEach( closeBtn => {
